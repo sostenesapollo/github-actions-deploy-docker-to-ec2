@@ -94,7 +94,7 @@ app_port=$(generate_var app_port $APP_PORT)
 # app_repo_name=$(generate_var app_repo_name APP_REPO_NAME - Fixed
 # app_branch_name=$(generate_var app_branch_name APP_BRANCH_NAME - Fixed
 # app_install_root=$(generate_var app_install_root APP_INSTALL_ROOT - Fixed
-ecr_url=$(generate_var lb_port $ECR_URL)
+ecr_url=$(generate_var ecr_url $ECR_URL)
 #-- Load Balancer --#
 lb_port=$(generate_var lb_port $LB_PORT)
 lb_healthcheck=$(generate_var lb_healthcheck $LB_HEALTHCHECK)
