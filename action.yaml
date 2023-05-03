@@ -76,10 +76,6 @@ inputs:
     description: 'The size of the volume (in GB) on the AWS Instance'
     required: false
     default: "8"
-  ecr_url:
-    description: 'Url to pull the docker image'
-    required: false
-    default: "need-to-define-the-value"
 
   
   # EFS
