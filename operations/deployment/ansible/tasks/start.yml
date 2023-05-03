@@ -20,7 +20,7 @@
       # Set the default region for the AWS CLI
       aws configure set region us-east-1
 
-      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin  $ecr_url 706901732480.dkr.ecr.us-east-1.amazonaws.com
+      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin  {{ ecr_url}} 706901732480.dkr.ecr.us-east-1.amazonaws.com
     chdir: /home/ubuntu/efs-utils
 
 - name: Start docker-compose
