@@ -1,49 +1,47 @@
-- name: Configure AWS CLI and login to ECR
-  become: true
+- name: Log variables app_install_root
+  block:
+    - debug:
+        var: app_install_root
 
-  vars:
-    ecr_url: $ECR_URL
-    aws_access_key_id: $AWS_ACCESS_KEY_ID
-    aws_secret_access_key: $AWS_ACCESS_KEY_ID
+- name: Log variables ECR_URL
+  block:
+    - debug:
+        var: ECR_URL
 
-  tasks:
-  - name: Display message before installing AWS CLI
-    debug:
-      msg: "Installing AWS CLI"
+- name: Display message before installing AWS CLI
+  debug:
+    msg: "Installing AWS CLI"
 
-  - name: Install AWS CLI
-    apt:
-      name: awscli
-      state: present
+- name: Install AWS CLI
+  apt:
+    name: awscli
+    state: present
 
-  - name: Display message after installing AWS CLI
-    debug:
-      msg: "AWS CLI installed successfully"
+- name: Display message after installing AWS CLI
+  debug:
+    msg: "AWS CLI installed successfully"
 
-  - name: Display message before configuring AWS CLI
-    debug:
-      msg: "Configuring AWS CLI"
+- name: Display message before configuring AWS CLI
+  debug:
+    msg: "Configuring AWS CLI"
 
-  - name: Configure AWS CLI
-    command: "aws configure set region us-east-1 && aws configure set aws_access_key_id {{ aws_access_key_id }} && aws configure set aws_secret_access_key {{ aws_secret_access_key }}"
+- name: Configure AWS CLI
+  command: "aws configure set region us-east-1 && aws configure set aws_access_key_id {{ aws_access_key_id }} && aws configure set aws_secret_access_key {{ aws_secret_access_key }}"
 
-  - name: Display message after configuring AWS CLI
-    debug:
-      msg: "AWS CLI configured successfully"
+- name: Display message after configuring AWS CLI
+  debug:
+    msg: "AWS CLI configured successfully"
 
-  - name: Display message before logging in to ECR
-    debug:
-      msg: "Logging in to ECR"
+- name: Display message before logging in to ECR
+  debug:
+    msg: "Logging in to ECR"
 
-  - name: Log in to ECR
-    shell: "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin {{ ECR_URL }}"
+- name: Log in to ECR
+  shell: "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin {{ ECR_URL }}"
 
-  - name: Display message after logging in to ECR
-    debug:
-      msg: "Logged in to ECR successfully"
-
-- name: Install AWS CLI v2
-  command: "/tmp/aws/install"
+- name: Display message after logging in to ECR
+  debug:
+    msg: "Logged in to ECR successfully"
 
 - name: Start docker-compose
   docker_compose:
