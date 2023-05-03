@@ -20,8 +20,6 @@
 
       aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin {{ ecr_url }} 706901732480.dkr.ecr.us-east-1.amazonaws.com
     chdir: /home/ubuntu/efs-utils
-  become: yes
-  when: not check_efs_utils.stat.exists  
 
 - name: Start docker-compose
   docker_compose:
