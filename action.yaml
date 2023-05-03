@@ -206,6 +206,7 @@ runs:
         AWS_SECRET_ENV: ${{ inputs.aws_secret_env }}
         APP_PORT: ${{ inputs.app_port }}
         LB_PORT: ${{ inputs.lb_port }}
+        ECR_URL: ${{ inputs.ECR_URL }}
         LB_HEALTHCHECK: ${{ inputs.lb_healthcheck }}
         EC2_INSTANCE_PROFILE: ${{ inputs.ec2_instance_profile }}
         EC2_INSTANCE_TYPE: ${{ inputs.ec2_instance_type }}
