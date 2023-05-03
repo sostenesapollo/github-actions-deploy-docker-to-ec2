@@ -1,4 +1,3 @@
----
 - name: Configure AWS CLI and login to ECR
   become: true
 
