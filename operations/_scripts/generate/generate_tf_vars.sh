@@ -96,6 +96,8 @@ app_port=$(generate_var app_port $APP_PORT)
 # app_install_root=$(generate_var app_install_root APP_INSTALL_ROOT - Fixed
 echo "ECR_URL >>>>> $ECR_URL"
 ecr_url=$(generate_var ecr_url $ECR_URL)
+aws_access_key_id=$(generate_var ecr_url $AWS_ACCESS_KEY_ID)
+aws_secret_access_key=$(generate_var ecr_url $AWS_SECRET_ACCESS_KEY)
 #-- Load Balancer --#
 lb_port=$(generate_var lb_port $LB_PORT)
 lb_healthcheck=$(generate_var lb_healthcheck $LB_HEALTHCHECK)
@@ -158,6 +160,8 @@ ec2_volume_size=$(generate_var ec2_volume_size $EC2_VOLUME_SIZE)
 echo "
 #-- Application --#
 $ecr_url
+$aws_access_key_id
+$aws_secret_access_key
 $app_port
 $ops_repo_environment
 $app_org_name
