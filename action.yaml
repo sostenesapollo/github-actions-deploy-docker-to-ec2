@@ -1,4 +1,4 @@
-name: 'Deploy Docker to AWS (EC2)'
+name: 'Deploy Docker to AWS (EC2) AND USE ECR'
 description: 'Deploy a Docker app to an AWS Virtual Machine (EC2) with Docker Compose'
 branding:
   icon: upload-cloud
