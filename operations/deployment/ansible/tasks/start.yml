@@ -1,3 +1,28 @@
+- name: Configure aws ECR auth
+  ansible.builtin.shell: 
+    cmd: |
+      # Ubuntu
+
+      # Install Aws Cli V2 - Ubuntu machine
+      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      sudo apt-get install unzip
+      unzip awscliv2.zip
+      sudo ./aws/install
+
+      # Set the access key ID and secret access key
+      echo AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+
+      export AWS_ACCESS_KEY_ID={{AWS_ACCESS_KEY_ID}}
+      export AWS_SECRET_ACCESS_KEY={{AWS_SECRET_ACCESS_KEY}}
+
+      # Set the default region for the AWS CLI
+      aws configure set region us-east-1
+
+      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin {{ ecr_url }} 706901732480.dkr.ecr.us-east-1.amazonaws.com
+    chdir: /home/ubuntu/efs-utils
+  become: yes
+  when: not check_efs_utils.stat.exists  
+
 - name: Start docker-compose
   docker_compose:
     project_src: "{{ app_install_root }}/{{ app_repo_name }}"
