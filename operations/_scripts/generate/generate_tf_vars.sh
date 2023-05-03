@@ -63,9 +63,14 @@ security_group_name="security_group_name = \"${GITHUB_IDENTIFIER}\""
 aws_resource_identifier="aws_resource_identifier = \"${GITHUB_IDENTIFIER}\""
 aws_resource_identifier_supershort="aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\""
 aws_security_group_name_pg="aws_security_group_name_pg = \"${GITHUB_IDENTIFIER}-pg\""
-ecr_url=$ECR_URL
-aws_access_key_id=$AWS_ACCESS_KEY_ID
-aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
+
+echo "Fixed ECR_URL $ECR_URL"
+echo "Fixed AWS_ACCESS_KEY_ID $AWS_ACCESS_KEY_ID"
+echo "Fixed AWS_SECRET_ACCESS_KEY $AWS_SECRET_ACCESS_KEY"
+
+ecr_url="$ECR_URL"
+aws_access_key_id="$AWS_ACCESS_KEY_ID"
+aws_secret_access_key="$AWS_SECRET_ACCESS_KEY"
 
 # Special cases
 
