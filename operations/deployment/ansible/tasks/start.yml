@@ -3,7 +3,7 @@
     cmd: |
       # Ubuntu
       echo >>>> Variables:
-      echo {{ ecr_url }}, $ecr_url
+      echo  ${ECR_URL}
 
       # Install Aws Cli V2 - Ubuntu machine
       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -20,7 +20,7 @@
       # Set the default region for the AWS CLI
       aws configure set region us-east-1
 
-      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin  {{ ecr_url}} 706901732480.dkr.ecr.us-east-1.amazonaws.com
+      aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin  ${ECR_URL}
     chdir: /home/ubuntu/efs-utils
 
 - name: Start docker-compose
