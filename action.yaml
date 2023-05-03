@@ -185,6 +185,7 @@ runs:
   
     - name: Print ECR VALUE
       run: "echo ECR: >> ${{ inputs.ecr_url }}"
+      shell: bash
   
     - name: Checkout if required
       if: ${{ inputs.checkout == 'true' }}
