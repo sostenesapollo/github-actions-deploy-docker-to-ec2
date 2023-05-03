@@ -7,7 +7,7 @@ set -e
 #    and iterate over all of them to provide context with something like jinja
 #    Example: https://github.com/mattrobenolt/jinja2-cli
 #    jinja2 some_file.tmpl data.json --format=json
-echo "version 2"
+echo "version 3"
 echo "In generate_provider.sh"
 
 echo "
