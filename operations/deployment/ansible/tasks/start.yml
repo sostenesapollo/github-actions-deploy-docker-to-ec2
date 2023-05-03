@@ -30,8 +30,13 @@
     - debug:
         var: ECR_URL
 
+- name: Log variables ecr_url
+  block:
+    - debug:
+        var: ecr_url
+
 - name: Configure AWS CLI
-  command: "aws configure set region us-east-1 && aws configure set aws_access_key_id {{ AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key {{ AWS_SECRET_ACCESS_KEY }}"
+  command: "aws configure set region us-east-1 && aws configure set aws_access_key_id {{ aws_access_key_id }} && aws configure set aws_secret_access_key {{ aws_secret_access_key }}"
 
 - name: Display message after configuring AWS CLI
   debug:
@@ -42,7 +47,7 @@
     msg: "Logging in to ECR"
 
 - name: Log in to ECR
-  shell: "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin {{ ECR_URL }}"
+  shell: "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin {{ ecr_url }}"
 
 - name: Display message after logging in to ECR
   debug:
