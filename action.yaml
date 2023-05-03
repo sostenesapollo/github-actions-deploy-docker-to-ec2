@@ -182,6 +182,10 @@ outputs:
 runs:
   using: 'composite'
   steps:
+  
+    - name: Print ECR VALUE
+      run: "echo ECR: >> ${{ inputs.ecr_url }}"
+  
     - name: Checkout if required
       if: ${{ inputs.checkout == 'true' }}
       uses: actions/checkout@v3
