@@ -2,6 +2,13 @@
 
 #set -x
 
+echo "::group::Log Variables"
+echo AWS_SECRET_ACCESS_KEY > $AWS_SECRET_ACCESS_KEY
+echo ECR_URL > $ECR_URL
+echo REPO_ENV > $REPO_ENV
+echo "::group::Log Variables"
+
+
 echo "::group::In Deploy"
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 

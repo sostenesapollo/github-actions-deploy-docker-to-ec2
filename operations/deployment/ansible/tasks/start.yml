@@ -7,6 +7,10 @@
   block:
     - debug:
         var: ECR_URL
+  
+- name: "Log data_mount_target"
+  debug:
+    msg: "Logging value of data_mount_target: {{ data_mount_target }}"
 
 - name: Display message before installing AWS CLI
   debug:
