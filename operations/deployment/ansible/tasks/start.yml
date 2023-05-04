@@ -6,6 +6,14 @@
     var: hostvars[inventory_hostname]
   tags: debug_info
 
+  gather_facts: false
+  vars:
+    test_var1: A
+    test_var2: "{{ test_var1 }}"
+  tasks:
+    - debug:
+        var: vars
+
 - name: Log variables ECR_URL
   block:
     - debug:
