@@ -172,6 +172,10 @@ $app_repo_name
 $app_branch_name
 $app_install_root
 
+$ecr_url
+$aws_access_key_id
+$aws_secret_access_key
+
 #-- Load Balancer --#
 $lb_port
 $lb_healthcheck
