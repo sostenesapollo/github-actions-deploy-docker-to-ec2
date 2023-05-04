@@ -149,6 +149,7 @@ application_mount_target=$(generate_var application_mount_target $APPLICATION_MO
 efs_mount_target=$(generate_var efs_mount_target $EFS_MOUNT_TARGET)
 data_mount_target=$(generate_var data_mount_target $DATA_MOUNT_TARGET)
 ec2_volume_size=$(generate_var ec2_volume_size $EC2_VOLUME_SIZE)
+ecr_url=$(generate_var ecr_url $ECR_URL)
 
 
 # -------------------------------------------------- #
@@ -224,5 +225,6 @@ $additional_tags
 $application_mount_target
 $efs_mount_target
 $data_mount_target
+$ecr_url
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"

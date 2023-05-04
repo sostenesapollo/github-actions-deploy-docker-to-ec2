@@ -169,6 +169,9 @@ inputs:
     description: "Directory path within docker env to mount directory to, default is `/data`"
   efs_mount_target:
     description: "Directory path in efs to mount directory to, default is `/`"
+  ecr_url:
+    description: "Directory path in efs to mount directory to, default is `/`"
+    default: "default-action-value-ecr-url"
 
 outputs:
   vm_url:
@@ -238,6 +241,7 @@ runs:
         APPLICATION_MOUNT_TARGET: ${{ inputs.application_mount_target }}
         EFS_MOUNT_TARGET: ${{ inputs.efs_mount_target }}
         DATA_MOUNT_TARGET: ${{ inputs.data_mount_target }}
+        ECR_URL: ${{ inputs.ecr_url }}
 
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
