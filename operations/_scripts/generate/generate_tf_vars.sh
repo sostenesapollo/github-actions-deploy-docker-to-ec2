@@ -68,9 +68,6 @@ echo "Fixed ECR_URL $ECR_URL"
 echo "Fixed AWS_ACCESS_KEY_ID $AWS_ACCESS_KEY_ID"
 echo "Fixed AWS_SECRET_ACCESS_KEY $AWS_SECRET_ACCESS_KEY"
 
-ecr_url="ecr_url = \"${ECR_URL}\""
-ecr_url="aws_access_key_id = \"${AWS_ACCESS_KEY_ID}\""
-ecr_url="aws_secret_access_key = \"${AWS_SECRET_ACCESS_KEY}\""
 
 # Special cases
 
@@ -94,6 +91,10 @@ if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
 fi
 echo "AWS Postgres subnets: $aws_postgres_subnets"
 
+
+ecr_url=$(generate_var ecr_url $ECR_URL)
+aws_access_key_id=$(generate_var aws_access_key_id $AWS_ACCESS_KEY_ID)
+aws_secret_access_key=$(generate_var aws_secret_access_key $AWS_SECRET_ACCESS_KEY)
 
 #-- Application --#
 app_port=$(generate_var app_port $APP_PORT)
