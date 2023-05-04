@@ -282,5 +282,17 @@ variable "efs_mount_target" {
 variable "ecr_url" {
   type        = string
   description = "ECR URL"
-  default     = "example ecr url"
+  default     = "example ecr url tf"
+}
+
+variable "aws_access_key_id" {
+  type        = string
+  description = "AWS ACCESS KEY"
+  default     = "access key example tf"
+}
+
+variable "aws_secret_access_key" {
+  type        = string
+  description = "AWS SECRET KEY"
+  default     = "secret key example tf"
 }
