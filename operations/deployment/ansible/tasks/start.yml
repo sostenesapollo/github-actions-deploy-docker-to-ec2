@@ -35,7 +35,7 @@
   environment:
     AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
     AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
-  command: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin {{ ecr_url }}
+  shell: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin {{ ecr_url }}
 
 - name: Display message after logging in to ECR
   debug:
