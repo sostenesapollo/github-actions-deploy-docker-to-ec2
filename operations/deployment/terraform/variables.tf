@@ -278,3 +278,9 @@ variable "efs_mount_target" {
   description = "Directory path in efs to mount to"
   default     = null
 }
+
+variable "ecr_url" {
+  type        = string
+  description = "ECR URL"
+  default     = "example ecr url"
+}

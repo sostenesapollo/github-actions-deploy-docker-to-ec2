@@ -1,34 +1,10 @@
-- name: FIRST LOG
-  command: env
-
-- name: Display all variables/facts known for a host
+- name: DEBUG data_mount_target
   debug:
-    var: hostvars[inventory_hostname]
-  tags: debug_info
+    msg: "VARS: echo {{ data_mount_target }}"
 
-  gather_facts: false
-  vars:
-    test_var1: A
-    test_var2: "{{ test_var1 }}"
-  tasks:
-    - debug:
-        var: vars
-
-- name: Log variables ECR_URL
-  block:
-    - debug:
-        var: ECR_URL
-
-- name: DEBUG ENV
+- name: DEBUG ecr_
   debug:
-    msg: "VARS: echo $(env)"
-
-- name: DEBUG ENV
-  debug:
-    msg: "VARS: echo env"
-
-- name: Log All Variables env
-  command: "env"
+    msg: "VARS: echo {{ ecr_ }}"
 
 - name: Start docker-compose
   docker_compose:
