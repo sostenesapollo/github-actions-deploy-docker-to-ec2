@@ -6,6 +6,38 @@
   debug:
     msg: "VARS: echo {{ ecr_url }}"
 
+- name: DEBUG aws_access_key_id
+  debug:
+    msg: "VARS: echo {{ aws_access_key_id }}"
+
+- name: Display message before installing AWS CLI
+  debug:
+    msg: "Installing AWS CLI"
+
+- name: Install AWS CLI
+  apt:
+    name: awscli
+    state: present
+
+- name: Display message after installing AWS CLI
+  debug:
+    msg: "AWS CLI installed successfully"
+
+- name: Display message before configuring AWS CLI
+  debug:
+    msg: "Configuring AWS CLI"
+
+- name: Configure AWS CLI
+  command: |
+    aws configure set region us-east-1
+    aws configure set aws_access_key_id {{ aws_access_key_id }}
+    aws configure set aws_secret_access_key {{ aws_secret_access_key }}
+    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin {{ ecr_url }}
+
+- name: Display message after logging in to ECR
+  debug:
+    msg: "Logged in to ECR successfully"
+
 - name: Start docker-compose
   docker_compose:
     project_src: "{{ app_install_root }}/{{ app_repo_name }}"

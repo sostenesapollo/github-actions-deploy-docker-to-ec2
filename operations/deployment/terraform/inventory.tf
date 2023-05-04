@@ -17,6 +17,8 @@ resource "local_file" "ansible_inventory" {
     efs_mount_target         = var.efs_mount_target != null ? var.efs_mount_target : ""
     data_mount_target        = var.data_mount_target
     ecr_url                  = var.ecr_url
+    aws_access_key_id        = var.aws_access_key_id
+    aws_secret_access_key    = var.aws_secret_access_key
   })
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
 }

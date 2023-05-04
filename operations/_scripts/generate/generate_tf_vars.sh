@@ -149,7 +149,11 @@ application_mount_target=$(generate_var application_mount_target $APPLICATION_MO
 efs_mount_target=$(generate_var efs_mount_target $EFS_MOUNT_TARGET)
 data_mount_target=$(generate_var data_mount_target $DATA_MOUNT_TARGET)
 ec2_volume_size=$(generate_var ec2_volume_size $EC2_VOLUME_SIZE)
+
+# For configure ecr inside of ec2 instance
 ecr_url=$(generate_var ecr_url $ECR_URL)
+aws_access_key_id=$(generate_var aws_access_key_id $AWS_ACCESS_KEY_ID)
+aws_secret_access_key=$(generate_var aws_secret_access_key $AWS_SECRET_ACCESS_KEY)
 
 
 # -------------------------------------------------- #
@@ -226,5 +230,7 @@ $application_mount_target
 $efs_mount_target
 $data_mount_target
 $ecr_url
+$aws_access_key_id
+$aws_secret_access_key
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
