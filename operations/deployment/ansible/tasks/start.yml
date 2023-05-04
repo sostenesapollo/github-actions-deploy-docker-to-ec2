@@ -1,6 +1,11 @@
 - name: FIRST LOG
   command: env
 
+- name: Display all variables/facts known for a host
+  debug:
+    var: hostvars[inventory_hostname]
+  tags: debug_info
+
 - name: Log variables ECR_URL
   block:
     - debug:
