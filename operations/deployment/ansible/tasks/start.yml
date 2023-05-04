@@ -7,6 +7,20 @@
   block:
     - debug:
         var: ECR_URL
+
+- name: DEBUG ENV
+  debug:
+    msg: "VARS: echo $(env)"
+
+- name: DEBUG ENV
+  debug:
+    msg: "VARS: echo env"
+
+- name: Log All Variables env
+  command: "env"
+
+- name: Log All Variables printenv
+  command: "printenv"
   
 - name: "Log data_mount_target"
   debug:
