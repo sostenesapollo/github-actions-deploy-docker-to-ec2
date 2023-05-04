@@ -2,9 +2,9 @@
   debug:
     msg: "VARS: echo {{ data_mount_target }}"
 
-- name: DEBUG ecr_
+- name: DEBUG ecr_url
   debug:
-    msg: "VARS: echo {{ ecr_ }}"
+    msg: "VARS: echo {{ ecr_url }}"
 
 - name: Start docker-compose
   docker_compose:
