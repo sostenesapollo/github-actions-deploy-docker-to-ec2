@@ -68,9 +68,9 @@ echo "Fixed ECR_URL $ECR_URL"
 echo "Fixed AWS_ACCESS_KEY_ID $AWS_ACCESS_KEY_ID"
 echo "Fixed AWS_SECRET_ACCESS_KEY $AWS_SECRET_ACCESS_KEY"
 
-ecr_url="$ECR_URL"
-aws_access_key_id="$AWS_ACCESS_KEY_ID"
-aws_secret_access_key="$AWS_SECRET_ACCESS_KEY"
+ecr_url="ecr_url = \"${ECR_URL}\""
+ecr_url="aws_access_key_id = \"${AWS_ACCESS_KEY_ID}\""
+ecr_url="aws_secret_access_key = \"${AWS_SECRET_ACCESS_KEY}\""
 
 # Special cases
 
@@ -173,8 +173,6 @@ $app_branch_name
 $app_install_root
 
 $ecr_url
-$aws_access_key_id
-$aws_secret_access_key
 
 #-- Load Balancer --#
 $lb_port
