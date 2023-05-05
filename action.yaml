@@ -198,7 +198,6 @@ runs:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         REPOSITORY: ${{ inputs.ecr_repository }}
       run: |-
-        echo >>> Registry: $REGISTRY
         docker build -t $REGISTRY/$REPOSITORY:latest .
         docker push $REGISTRY/$REPOSITORY:latest
 
@@ -211,12 +210,12 @@ runs:
     - name: Remove Untagged ECR Images
       shell: bash
       env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         REPOSITORY: ${{ inputs.ecr_repository }}
-        ECR_URL: ${{ env.ECR_URL }}
         AWS_REGION: ${{ env.AWS_REGION }}
       continue-on-error: true
       run: |
-        aws ecr get-login-password --region $AWS_REGION | sudo docker login --username AWS --password-stdin $ECR_URL  2>/dev/null
+        aws ecr get-login-password --region $AWS_REGION | sudo docker login --username AWS --password-stdin $REGISTRY/$REPOSITORY  2>/dev/null
           
         IMAGE_IDS=$(aws ecr list-images --repository-name "$REPOSITORY" --filter "tagStatus=UNTAGGED" --query "imageIds[*]" --output json)
         if [ -z "$IMAGE_IDS" ]; then
@@ -230,36 +229,10 @@ runs:
       shell: bash
       env:
         REPOSITORY: ${{ env.ECR_REPOSITORY }}
-        ECR_URL: ${{ env.ECR_URL }}
         AWS_REGION: ${{ env.AWS_REGION }}
       continue-on-error: true
       run: |
         aws ecr create-repository --repository-name $REPOSITORY --region $AWS_REGION
-
-    - name: Get AWS user id
-      shell: bash
-      id: get-user-id
-      run: |
-        echo "::group::In Deploy"
-
-        echo "Getting User id"
-        export USER_ID=$(aws sts get-caller-identity --query Account --output text)
-        
-        echo UserId: $USER_ID
-
-        echo "::set-output name=USER_ID::$USER_ID"
-
-        echo "::endgroup::"
-    
-    - name: Get user id output
-      shell: bash
-      run: |
-        echo "::group::In Deploy"
-
-        echo "Log User Id"
-        echo {{ steps.get-user-id.outputs.USER_ID }}
-        
-        echo "::endgroup::"
 
     - name: Deploy with BitOps
       id: deploy
@@ -316,8 +289,8 @@ runs:
         APPLICATION_MOUNT_TARGET: ${{ inputs.application_mount_target }}
         EFS_MOUNT_TARGET: ${{ inputs.efs_mount_target }}
         DATA_MOUNT_TARGET: ${{ inputs.data_mount_target }}
-        ECR_URL: ${{ env.USER_ID}}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest
-        GHV_ENV: ${{ inputs.ghv_env }}\nECR_URL=${{ env.ECR_REPOSITORY }}:latest
+        ECR_URL: ${{ steps.login-ecr.outputs.registry }}${{ inputs.ecr_repository }}:latest
+        GHV_ENV: ${{ inputs.ghv_env }}\nECR_URL=${{ steps.login-ecr.outputs.registry }}${{ inputs.ecr_repository }}:latest
 
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
