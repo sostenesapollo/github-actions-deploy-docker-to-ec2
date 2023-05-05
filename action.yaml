@@ -185,6 +185,61 @@ runs:
       if: ${{ inputs.checkout == 'true' }}
       uses: actions/checkout@v3
 
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Build, tag and push docker image
+      shell: bash
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: ${{ env.ECR_REPOSITORY }}
+      run: |-
+        docker build -t $REGISTRY/$REPOSITORY:latest .
+        docker push $REGISTRY/$REPOSITORY:latest
+
+    - name: Print IMAGE_NAME
+      shell: bash
+      run: echo "IMAGE_NAME = $IMAGE_NAME"
+
+    - name: Install AWS CLI
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y awscli
+    
+    - name: Create ECR Repository
+      shell: bash
+      env:
+        REPOSITORY: ${{ env.ECR_REPOSITORY }}
+        ECR_URL: ${{ env.ECR_URL }}
+        AWS_REGION: ${{ env.AWS_REGION }}
+      continue-on-error: true
+      run: |
+        aws ecr create-repository --repository-name $REPOSITORY --region $AWS_REGION
+
+    - name: Remove Untagged ECR Images
+      shell: bash
+      env:
+        REPOSITORY: ${{ env.ECR_REPOSITORY }}
+        ECR_URL: ${{ env.ECR_URL }}
+        AWS_REGION: ${{ env.AWS_REGION }}
+      continue-on-error: true
+      run: |
+        echo ">>>>>>>> AWS login, repo: $REPOSITORY, ECR URL: $ECR_URL, AWS_REGION: $AWS_REGION <<<<<<<<"
+        aws ecr get-login-password --region $AWS_REGION | sudo docker login --username AWS --password-stdin $ECR_URL  2>/dev/null
+          
+        IMAGE_IDS=$(aws ecr list-images --repository-name "$REPOSITORY" --filter "tagStatus=UNTAGGED" --query "imageIds[*]" --output json)
+        if [ -z "$IMAGE_IDS" ]; then
+          echo "No untagged images found in $REPOSITORY."
+        else
+          aws ecr batch-delete-image --repository-name "$REPOSITORY" --image-ids "$IMAGE_IDS"
+          echo "Untagged images removed from $REPOSITORY."
+        fi
+
     - name: Deploy with BitOps
       id: deploy
       shell: bash
@@ -242,6 +297,7 @@ runs:
         EFS_MOUNT_TARGET: ${{ inputs.efs_mount_target }}
         DATA_MOUNT_TARGET: ${{ inputs.data_mount_target }}
         ECR_URL: ${{ inputs.ecr_url }}
+        ecr_repository: ${{ ecr_repository }}
 
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
