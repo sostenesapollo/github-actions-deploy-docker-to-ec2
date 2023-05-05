@@ -291,7 +291,7 @@ runs:
         APPLICATION_MOUNT_TARGET: ${{ inputs.application_mount_target }}
         EFS_MOUNT_TARGET: ${{ inputs.efs_mount_target }}
         DATA_MOUNT_TARGET: ${{ inputs.data_mount_target }}
-        ECR_URL: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repository }}:latest
+        ECR_URL: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repository }}
         GHV_ENV: ${{ inputs.ghv_env }}\nECR_URL=${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repository }}:latest
 
       run: |
