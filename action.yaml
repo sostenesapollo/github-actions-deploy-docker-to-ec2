@@ -190,8 +190,19 @@ runs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Checkout
-      uses: actions/checkout@v2
-    
+      uses: actions/checkout@v2 
+
+    - name: Create ECR Repository
+      shell: bash
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: ${{ inputs.ecr_repository }}
+        AWS_REGION: ${{ env.AWS_REGION }}
+      continue-on-error: true
+      run: |
+        aws ecr get-login-password --region $AWS_REGION | sudo docker login --username AWS --password-stdin $REGISTRY/$REPOSITORY  2>/dev/null
+        aws ecr create-repository --repository-name $REPOSITORY --region $AWS_REGION
+
     - name: Build, tag and push docker image
       shell: bash
       env:
@@ -224,15 +235,6 @@ runs:
           aws ecr batch-delete-image --repository-name "$REPOSITORY" --image-ids "$IMAGE_IDS"
           echo "Untagged images removed from $REPOSITORY."
         fi
-
-    - name: Create ECR Repository
-      shell: bash
-      env:
-        REPOSITORY: ${{ env.ECR_REPOSITORY }}
-        AWS_REGION: ${{ env.AWS_REGION }}
-      continue-on-error: true
-      run: |
-        aws ecr create-repository --repository-name $REPOSITORY --region $AWS_REGION
 
     - name: Deploy with BitOps
       id: deploy
