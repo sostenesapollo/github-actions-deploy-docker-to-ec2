@@ -169,8 +169,8 @@ inputs:
     description: "Directory path within docker env to mount directory to, default is `/data`"
   efs_mount_target:
     description: "Directory path in efs to mount directory to, default is `/`"
-  ecr_url:
-    description: "Directory path in efs to mount directory to, default is `/`"
+  ecr_repository:
+    description: "Ecr Repository name"
     default: "default-action-value-ecr-url"
 
 outputs:
@@ -196,14 +196,11 @@ runs:
       shell: bash
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        REPOSITORY: ${{ env.ECR_REPOSITORY }}
+        REPOSITORY: ${{ inputs.ecr_repository }}
       run: |-
+        echo >>> Registry: $REGISTRY
         docker build -t $REGISTRY/$REPOSITORY:latest .
         docker push $REGISTRY/$REPOSITORY:latest
-
-    - name: Print IMAGE_NAME
-      shell: bash
-      run: echo "IMAGE_NAME = $IMAGE_NAME"
 
     - name: Install AWS CLI
       shell: bash
@@ -211,6 +208,24 @@ runs:
         sudo apt-get update
         sudo apt-get install -y awscli
     
+    - name: Remove Untagged ECR Images
+      shell: bash
+      env:
+        REPOSITORY: ${{ inputs.ecr_repository }}
+        ECR_URL: ${{ env.ECR_URL }}
+        AWS_REGION: ${{ env.AWS_REGION }}
+      continue-on-error: true
+      run: |
+        aws ecr get-login-password --region $AWS_REGION | sudo docker login --username AWS --password-stdin $ECR_URL  2>/dev/null
+          
+        IMAGE_IDS=$(aws ecr list-images --repository-name "$REPOSITORY" --filter "tagStatus=UNTAGGED" --query "imageIds[*]" --output json)
+        if [ -z "$IMAGE_IDS" ]; then
+          echo "No untagged images found in $REPOSITORY."
+        else
+          aws ecr batch-delete-image --repository-name "$REPOSITORY" --image-ids "$IMAGE_IDS"
+          echo "Untagged images removed from $REPOSITORY."
+        fi
+
     - name: Create ECR Repository
       shell: bash
       env:
@@ -221,24 +236,30 @@ runs:
       run: |
         aws ecr create-repository --repository-name $REPOSITORY --region $AWS_REGION
 
-    - name: Remove Untagged ECR Images
+    - name: Get AWS user id
       shell: bash
-      env:
-        REPOSITORY: ${{ env.ECR_REPOSITORY }}
-        ECR_URL: ${{ env.ECR_URL }}
-        AWS_REGION: ${{ env.AWS_REGION }}
-      continue-on-error: true
+      id: get-user-id
       run: |
-        echo ">>>>>>>> AWS login, repo: $REPOSITORY, ECR URL: $ECR_URL, AWS_REGION: $AWS_REGION <<<<<<<<"
-        aws ecr get-login-password --region $AWS_REGION | sudo docker login --username AWS --password-stdin $ECR_URL  2>/dev/null
-          
-        IMAGE_IDS=$(aws ecr list-images --repository-name "$REPOSITORY" --filter "tagStatus=UNTAGGED" --query "imageIds[*]" --output json)
-        if [ -z "$IMAGE_IDS" ]; then
-          echo "No untagged images found in $REPOSITORY."
-        else
-          aws ecr batch-delete-image --repository-name "$REPOSITORY" --image-ids "$IMAGE_IDS"
-          echo "Untagged images removed from $REPOSITORY."
-        fi
+        echo "::group::In Deploy"
+
+        echo "Getting User id"
+        export USER_ID=$(aws sts get-caller-identity --query Account --output text)
+        
+        echo UserId: $USER_ID
+
+        echo "::set-output name=USER_ID::$USER_ID"
+
+        echo "::endgroup::"
+    
+    - name: Get user id output
+      shell: bash
+      run: |
+        echo "::group::In Deploy"
+
+        echo "Log User Id"
+        echo {{ steps.get-user-id.outputs.USER_ID }}
+        
+        echo "::endgroup::"
 
     - name: Deploy with BitOps
       id: deploy
@@ -256,7 +277,6 @@ runs:
         TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
         REPO_ENV: ${{ inputs.repo_env }}
         GHS_ENV: ${{ inputs.dot_env }}
-        GHV_ENV: ${{ inputs.ghv_env }}
         AWS_SECRET_ENV: ${{ inputs.aws_secret_env }}
         APP_PORT: ${{ inputs.app_port }}
         LB_PORT: ${{ inputs.lb_port }}
@@ -296,8 +316,8 @@ runs:
         APPLICATION_MOUNT_TARGET: ${{ inputs.application_mount_target }}
         EFS_MOUNT_TARGET: ${{ inputs.efs_mount_target }}
         DATA_MOUNT_TARGET: ${{ inputs.data_mount_target }}
-        ECR_URL: ${{ inputs.ecr_url }}
-        ecr_repository: ${{ ecr_repository }}
+        ECR_URL: ${{ env.USER_ID}}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:latest
+        GHV_ENV: ${{ inputs.ghv_env }}\nECR_URL=${{ env.ECR_REPOSITORY }}:latest
 
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
