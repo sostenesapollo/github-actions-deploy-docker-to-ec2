@@ -292,7 +292,7 @@ runs:
         EFS_MOUNT_TARGET: ${{ inputs.efs_mount_target }}
         DATA_MOUNT_TARGET: ${{ inputs.data_mount_target }}
         ECR_URL: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repository }}
-        GHV_ENV: ${{ inputs.ghv_env }}
+        GHV_ENV: IMAGE_URL_ECR=${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repository }}:latest
 
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
